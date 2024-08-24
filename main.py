@@ -65,24 +65,37 @@ async def send_jobs(ctx, jobs, num_results):
 # Fetch Jobs Discord Command
 @client.command()
 async def fetchjobs(ctx, *args):
-    keyword = None
+    keyword = []
     num_results = 10  # Default number of results
-    for arg in args:
+    max_results = 50  # Maximum number of results allowed
+
+    args = list(args)  # Convert tuple to list for easier manipulation
+    i = 0
+    while i < len(args):
+        arg = args[i]
         if arg.startswith('-'):
             # Handle flags
-            if 'n' in arg:
-                # Expect the next element to be the number of results
-                num_index = args.index(arg) + 1
-                if num_index < len(args):
-                    num_results = int(args[num_index])
+            if 'n' in arg and i + 1 < len(args):
+                try:
+                    # Try to parse the next element as the number of results
+                    num_results = int(args[i + 1])
+                    if num_results > max_results:
+                        num_results = max_results
+                        await ctx.send(f"Number of results limited to maximum of {max_results}.")
+                    i += 1  # Increment to skip next element since it's part of this flag
+                except ValueError:
+                    await ctx.send("Please enter a valid number for results.")
+                    return
         else:
-            # Assume it's the keyword if it's not a flag
-            keyword = arg
+            # Assume it's part of the keyword if it's not a flag
+            keyword.append(arg)
+        i += 1
 
-    if keyword is None:
+    if not keyword:
         await ctx.send("Please specify a keyword for job searching. Example usage: `%fetchjobs cybersecurity -n 5`")
         return
 
+    keyword = ' '.join(keyword)  # Join list into a single string
     jobs, total_results = await fetch_jobs_keyword(keyword, num_results)  # Ensure this matches the fetch function
     if jobs:
         await ctx.send(f"Total jobs found for '{keyword}': {total_results}")
