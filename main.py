@@ -1,4 +1,4 @@
-# Import dependicies, make sure to download them on your computer too 
+# Import dependencies, make sure to download them on your computer too 
 import discord
 from discord.ext import commands 
 import aiohttp
@@ -25,7 +25,7 @@ def get_this_week():
 
 
 # Test
-async def fetch_jobs_keyword(keyword, num_results=10):
+async def fetch_jobs_keyword(keyword, num_results=10, location='All'):
     current_date = datetime.now()
     two_weeks_ago = current_date - timedelta(weeks=2)
     start_date = two_weeks_ago.strftime('%Y-%m-%d')
@@ -41,6 +41,8 @@ async def fetch_jobs_keyword(keyword, num_results=10):
         'Keyword': keyword,
         'ResultsPerPage': str(num_results)
     }
+    if location != 'All':
+        params['LocationName'] = location
 
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers, params=params) as response:
@@ -63,11 +65,26 @@ async def send_jobs(ctx, jobs, num_results):
 
 
 # Fetch Jobs Discord Command
-@client.command()
+@client.command(brief="Searches jobs based on user criteria", help="""Fetches jobs based on a keyword and optional flags.
+
+Usage:
+    %fetchjobs <keyword> [-n number] [-l location]
+
+Arguments:
+    keyword : The job keyword(s) to search for.
+    -n number : The number of results to return. Default is 10. Max is 30
+    -l location : The geographic location to filter jobs. Default is 'All'. Can only use one location at a time
+
+Example:
+    %fetchjobs developer -n 5 -l "New York"
+    This will fetch 5 developer jobs in New York.""")
+
+
 async def fetchjobs(ctx, *args):
     keyword = []
     num_results = 10  # Default number of results
-    max_results = 50  # Maximum number of results allowed
+    max_results = 30  # Maximum number of results allowed
+    location = 'All'  # Default location
 
     args = list(args)  # Convert tuple to list for easier manipulation
     i = 0
@@ -86,6 +103,9 @@ async def fetchjobs(ctx, *args):
                 except ValueError:
                     await ctx.send("Please enter a valid number for results.")
                     return
+            elif 'l' in arg and i+1 < len(args):
+                location = args[i + 1]
+                i += 1  # Increment to skip the location value
         else:
             # Assume it's part of the keyword if it's not a flag
             keyword.append(arg)
@@ -96,9 +116,9 @@ async def fetchjobs(ctx, *args):
         return
 
     keyword = ' '.join(keyword)  # Join list into a single string
-    jobs, total_results = await fetch_jobs_keyword(keyword, num_results)  # Ensure this matches the fetch function
+    jobs, total_results = await fetch_jobs_keyword(keyword, num_results, location)  # Ensure this matches the fetch function
     if jobs:
-        await ctx.send(f"Total jobs found for '{keyword}': {total_results}")
+        await ctx.send(f"Total jobs found for '{keyword}' in '{location}': {total_results}")
         await send_jobs(ctx, jobs, num_results)
     else:
         await ctx.send(f"No jobs found or there was an error in fetching jobs for '{keyword}'.")
@@ -112,7 +132,7 @@ async def fetchjobs_cybersecurity(ctx):
     if jobs and 'SearchResult' in jobs and 'SearchResultItems' in jobs['SearchResult']:
         for job in jobs['SearchResult']['SearchResultItems']:
             title = job['MatchedObjectDescriptor']['PositionTitle']
-            location = job['MatchedObjectDescriptor']['PositionLocation'][0]['LocationName']
+            location = job['MatchedObjectDescriptor']['PositionLocation'][0]['LocationName'] #Doesn't take into account multiple locations..
             await ctx.send(f"**{title}** - {location}")
     else:
         await ctx.send("No jobs found or there was an error in fetching jobs.")
@@ -126,13 +146,8 @@ async def on_ready():
 
 
 # Hello Discord Command
-@client.command()
+@client.command(brief="Greets the user", help="This command sends a greeting message and offers help.")
 async def hello(ctx):
-   await ctx.send("Hello I am a bot")
-
-# Help command
-@client.command()
-async def helpme(ctx):
-   await ctx.send("The prefix to this bot is %, the current commands you can do is %hello, %help, and %fetch_jobs, the fetch_jobs function finds jobs with the keyword cybersecurity")
+   await ctx.send("Hello I am a bot, do %help for more info")
 
 client.run(TOKEN) # Secrets
