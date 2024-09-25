@@ -1,4 +1,4 @@
-# Import dependencies, make sure to download them on your computer too 
+# Import dependicies, make sure to download them on your computer too 
 import discord
 from discord.ext import commands 
 import aiohttp
@@ -25,7 +25,7 @@ def get_this_week():
 
 
 # Test
-async def fetch_jobs_keyword(keyword, num_results=10, location='All'):
+async def fetch_jobs_keyword(keyword, num_results=10, location='All', hiring_paths=[]):
     current_date = datetime.now()
     two_weeks_ago = current_date - timedelta(weeks=2)
     start_date = two_weeks_ago.strftime('%Y-%m-%d')
@@ -39,10 +39,12 @@ async def fetch_jobs_keyword(keyword, num_results=10, location='All'):
     }
     params = {
         'Keyword': keyword,
-        'ResultsPerPage': str(num_results)
+        'ResultsPerPage': str(num_results),
+        'HiringPath' : ';'.join(hiring_paths) if hiring_paths else 'public',
+        'LocationName': location if location != 'All' else None  # Handle location parameter
     }
-    if location != 'All':
-        params['LocationName'] = location
+
+    
 
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers, params=params) as response:
@@ -56,11 +58,30 @@ async def fetch_jobs_keyword(keyword, num_results=10, location='All'):
 
 # Send request of parsed jobs
 async def send_jobs(ctx, jobs, num_results):
-    if jobs['SearchResult']['SearchResultItems']:
-        for job in jobs['SearchResult']['SearchResultItems'][:num_results]:
-            title = job['MatchedObjectDescriptor']['PositionTitle']
-            location = job['MatchedObjectDescriptor']['PositionLocation'][0]['LocationName']
-            await ctx.send(f"**{title}** - {location}")
+    # First, check if job data exists and has items
+    if jobs and 'SearchResult' in jobs and 'SearchResultItems' in jobs['SearchResult'] and jobs['SearchResult']['SearchResultItems']:
+        job_items = jobs['SearchResult']['SearchResultItems'][:num_results]  # Limit the output to requested number of results
+        if job_items:
+            # Send each job as a message; consider using embeds for better formatting
+            for job in job_items:
+                title = job['MatchedObjectDescriptor']['PositionTitle']
+                location = job['MatchedObjectDescriptor']['PositionLocation'][0]['LocationName']
+                job_url = job['MatchedObjectDescriptor']['PositionURI']  # Assuming URI is available for the job posting link
+                hiring_paths = ", ".join(job['MatchedObjectDescriptor'].get('UserArea', {}).get('Details', {}).get('HiringPath', ['Not specified']))  # Adjust based on actual API response
+
+                # Sending an embed for each job listing
+                embed = discord.Embed(title=title, url=job_url, description=f"Location: {location}", color=discord.Color.blue())
+                embed.set_author(name="USAJobs Listing")
+                embed.add_field(name="Hiring Paths", value=hiring_paths, inline=False)
+                embed.add_field(name="Apply Here", value=f"[Click to view job posting]({job_url})", inline=False)
+                await ctx.send(embed=embed)
+        else:
+            # If no job items found in the list
+            await ctx.send("There are no job listings available for the specified criteria.")
+    else:
+        # If the jobs object is empty or missing expected data
+        await ctx.send("No jobs found or there was an error retrieving jobs. Please try again.")
+
             
 
 
@@ -85,6 +106,7 @@ async def fetchjobs(ctx, *args):
     num_results = 10  # Default number of results
     max_results = 30  # Maximum number of results allowed
     location = 'All'  # Default location
+    hiring_paths = [] 
 
     args = list(args)  # Convert tuple to list for easier manipulation
     i = 0
@@ -106,6 +128,9 @@ async def fetchjobs(ctx, *args):
             elif 'l' in arg and i+1 < len(args):
                 location = args[i + 1]
                 i += 1  # Increment to skip the location value
+            elif 'p' in arg and i+1 < len(args):
+                location = args[i + 1]
+                i += 1  # Increment to skip the location value
         else:
             # Assume it's part of the keyword if it's not a flag
             keyword.append(arg)
@@ -116,9 +141,9 @@ async def fetchjobs(ctx, *args):
         return
 
     keyword = ' '.join(keyword)  # Join list into a single string
-    jobs, total_results = await fetch_jobs_keyword(keyword, num_results, location)  # Ensure this matches the fetch function
+    jobs, total_results = await fetch_jobs_keyword(keyword, num_results, location, hiring_paths)  # Ensure this matches the fetch function
     if jobs:
-        await ctx.send(f"Total jobs found for '{keyword}' in '{location}': {total_results}")
+        await ctx.send(f"Total jobs found for '{keyword}' in '{location}' with hiring paths '{hiring_paths}': {total_results}")
         await send_jobs(ctx, jobs, num_results)
     else:
         await ctx.send(f"No jobs found or there was an error in fetching jobs for '{keyword}'.")
