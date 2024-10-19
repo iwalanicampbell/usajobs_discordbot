@@ -3,9 +3,8 @@ import discord
 from discord.ext import tasks, commands 
 import aiohttp
 from datetime import datetime, timedelta
+import os
 
-# Import config file
-from config import *
 
 intents = discord.Intents.default()  # Default intents settings can customize 
 intents.message_content = True
@@ -34,8 +33,8 @@ async def fetch_jobs_keyword(keyword, num_results=10, location='All', hiring_pat
     url = "https://data.usajobs.gov/api/search"
     headers = {
         'Host': 'data.usajobs.gov',
-        'User-Agent': EMAIL, 
-        'Authorization-Key': USAJOBS_KEY  # Secrets
+        'User-Agent': os.environ.get('EMAIL'), 
+        'Authorization-Key': os.environ.get('JOB_KEY') # Secrets
     }
     params = {
         'Keyword': keyword,
@@ -166,7 +165,7 @@ async def fetchjobs_cybersecurity(ctx):
 # Background task to fetch jobs every week (604800 seconds in a week)
 @tasks.loop(seconds=604800)
 async def weekly_internship_fetch():
-    channel = client.get_channel('YOUR_CHANNEL_ID')  # Replace with the actual channel ID SECRETS
+    channel = client.get_channel(os.environ.get('CHANNEL_ID1'))  # Replace with the actual channel ID SECRETS
     keyword = ["computer science", "IT", "cybersecurity"]
     location = "hawaii"
     hiring_paths = ["student"]
@@ -181,7 +180,7 @@ async def weekly_internship_fetch():
 
 @tasks.loop(seconds=604800)
 async def weekly_job_fetch():
-    channel = client.get_channel('YOUR_CHANNEL_ID')  # Replace with the actual channel ID SECRETS
+    channel = client.get_channel(os.environ.get('CHANNEL_ID2'))  # Replace with the actual channel ID SECRETS
     keyword = ["computer science", "IT", "cybersecurity"]
     location = ["hawaii", "remote"]
     hiring_paths = ["graduates"]
@@ -210,4 +209,4 @@ async def on_ready():
 async def hello(ctx):
    await ctx.send("Hello I am a bot, do %help for more info")
 
-client.run(TOKEN) # Secrets
+client.run(os.environ.get('TOKEN')) # Secrets
