@@ -1,0 +1,37 @@
+name: Run Client Script
+
+on: [push]
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Read Python Version
+        id: python_version
+        run: |
+          PYTHON_VERSION=$(cat runtime.txt)
+          echo "Python version set to $PYTHON_VERSION"
+          echo "PYTHON_VERSION=$PYTHON_VERSION" >> $GITHUB_ENV
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Script
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+          EMAIL: ${{ secrets.EMAIL }}
+          JOB_KEY: ${{ secrets.JOBS_KEY }}
+          CHANNEL_ID1: ${{ secrets.CHANNEL_ID1 }}
+          CHANNEL_ID2: ${{ secrets.CHANNEL_ID2 }}
+        run: |
+          python main.py
