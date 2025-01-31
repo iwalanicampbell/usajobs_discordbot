@@ -2,7 +2,6 @@
 import discord
 from discord.ext import tasks, commands 
 import aiohttp
-from datetime import datetime, timedelta
 import os
 
 
@@ -13,23 +12,8 @@ client = commands.Bot(command_prefix = '%', intents=intents)
 
 # USAJOBS API Tutorial https://developer.usajobs.gov/tutorials/search-jobs
 
-def get_this_week():
-   current_date = datetime.now()
-   two_weeks_ago = current_date - timedelta(weeks=2)
-   start_date = two_weeks_ago.strftime('%Y-%m-%d')
-   end_date = current_date.strftime('%Y-%m-%d')
-   print(start_date)
-   print(end_date)
-   return start_date,end_date
-
-
 # Test
-async def fetch_jobs_keyword(keyword, num_results=10, location='All', hiring_paths=[]):
-    current_date = datetime.now()
-    two_weeks_ago = current_date - timedelta(weeks=2)
-    start_date = two_weeks_ago.strftime('%Y-%m-%d')
-    end_date = current_date.strftime('%Y-%m-%d')
-
+async def fetch_jobs_api(keyword, num_results=10, location='All', hiring_paths=[]):
     url = "https://data.usajobs.gov/api/search"
     headers = {
         'Host': 'data.usajobs.gov',
@@ -40,10 +24,8 @@ async def fetch_jobs_keyword(keyword, num_results=10, location='All', hiring_pat
         'Keyword': keyword,
         'ResultsPerPage': str(num_results),
         'HiringPath' : ';'.join(hiring_paths) if hiring_paths else 'public',
-        'LocationName': location if location != 'All' else None  # Handle location parameter
+        'LocationName': location if location != 'All' else None  
     }
-
-    
 
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers, params=params) as response:
@@ -53,7 +35,8 @@ async def fetch_jobs_keyword(keyword, num_results=10, location='All', hiring_pat
                 return jobs, total_results
             else:
                 print(f"Failed to fetch jobs for keyword: {keyword} with status code: {response.status}")
-                return None
+                return None # Failure 
+            
 
 # Send request of parsed jobs
 async def send_jobs(ctx, jobs, num_results):
@@ -140,53 +123,50 @@ async def fetchjobs(ctx, *args):
         return
 
     keyword = ' '.join(keyword)  # Join list into a single string
-    jobs, total_results = await fetch_jobs_keyword(keyword, num_results, location, hiring_paths)  # Ensure this matches the fetch function
+    jobs, total_results = await fetch_jobs_api(keyword, num_results, location, hiring_paths)  # Ensure this matches the fetch function
     if jobs:
         await ctx.send(f"Total jobs found for '{keyword}' in '{location}' with hiring paths '{hiring_paths}': {total_results}")
         await send_jobs(ctx, jobs, num_results)
     else:
         await ctx.send(f"No jobs found or there was an error in fetching jobs for '{keyword}'.")
 
-
-
-# Fetch Jobs By Cybersecurity Discord Command
-@client.command()
-async def fetchjobs_cybersecurity(ctx):
-    jobs = await fetch_jobs_keyword('cybersecurity')
-    if jobs and 'SearchResult' in jobs and 'SearchResultItems' in jobs['SearchResult']:
-        for job in jobs['SearchResult']['SearchResultItems']:
-            title = job['MatchedObjectDescriptor']['PositionTitle']
-            location = job['MatchedObjectDescriptor']['PositionLocation'][0]['LocationName'] #Doesn't take into account multiple locations..
-            await ctx.send(f"**{title}** - {location}")
-    else:
-        await ctx.send("No jobs found or there was an error in fetching jobs.")
-
-
 # Background task to fetch jobs every week (604800 seconds in a week)
 @tasks.loop(seconds=604800)
 async def weekly_internship_fetch():
-    channel = client.get_channel(os.environ.get('CHANNEL_ID1'))  # Replace with the actual channel ID SECRETS
+    channel_id = os.environ.get('CHANNEL_ID1')
+    channel = client.get_channel(int(channel_id)) if channel_id else None # Convert to int, might be a type error if not
+
+    if not channel:
+        print(f"⚠️ ERROR: Channel ID {channel_id} not found!")
+        return
+    
     keyword = ["computer science", "IT", "cybersecurity"]
     location = "hawaii"
     hiring_paths = ["student"]
     num_results = 15
 
-    jobs, total_results = await fetch_jobs_keyword(keyword, num_results, location, hiring_paths)
+    jobs, total_results = await fetch_jobs_api(keyword, num_results, location, hiring_paths)
     if jobs:
-        await channel.send(f"Weekly job search results for '{keyword}' in '{location}' with hiring paths '{hiring_paths}': {total_results}")
+        await channel.send(f"Weekly internship search results for '{keyword}' in '{location}' with hiring paths '{hiring_paths}': {total_results}")
         await send_jobs(channel, jobs, num_results)
     else:
         await channel.send("No jobs found or there was an error fetching jobs this week.")
 
 @tasks.loop(seconds=604800)
 async def weekly_job_fetch():
-    channel = client.get_channel(os.environ.get('CHANNEL_ID2'))  # Replace with the actual channel ID SECRETS
+    channel_id = os.environ.get('CHANNEL_ID2')
+    channel = client.get_channel(int(channel_id)) if channel_id else None # Convert to int, might be a type error if not
+
+    if not channel:
+        print(f"⚠️ ERROR: Channel ID {channel_id} not found!")
+        return
+
     keyword = ["computer science", "IT", "cybersecurity"]
     location = ["hawaii", "remote"]
     hiring_paths = ["graduates"]
     num_results = 15
 
-    jobs, total_results = await fetch_jobs_keyword(keyword, num_results, location, hiring_paths)
+    jobs, total_results = await fetch_jobs_api(keyword, num_results, location, hiring_paths)
     if jobs:
         await channel.send(f"Weekly job search results for '{keyword}' in '{location}' with hiring paths '{hiring_paths}': {total_results}")
         await send_jobs(channel, jobs, num_results)
@@ -196,6 +176,7 @@ async def weekly_job_fetch():
 # On Ready
 @client.event
 async def on_ready():
+    print(f"✅ Logged in as {client.user} ({client.user.id})")
     if not weekly_internship_fetch.is_running():  # Check if the task is already running
         weekly_internship_fetch.start()  # Start the background task when the bot is ready
     if not weekly_job_fetch.is_running():  # Check if the task is already running
@@ -210,3 +191,6 @@ async def hello(ctx):
    await ctx.send("Hello I am a bot, do %help for more info")
 
 client.run(os.environ.get('TOKEN')) # Secrets
+
+
+
