@@ -33,4 +33,4 @@ jobs:
           CHANNEL_ID1: ${{ secrets.CHANNEL_ID1 }}
           CHANNEL_ID2: ${{ secrets.CHANNEL_ID2 }}
         run: |
-          python test.py
+          python -m unittest tests.test
