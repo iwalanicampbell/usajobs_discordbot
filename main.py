@@ -1,3 +1,9 @@
+##
+# @author Iwalani C.
+# @file main.py
+# @brief This file handles the main methods used for the bot 
+##
+
 # Import dependicies, make sure to download them on your computer too 
 import discord
 from discord.ext import tasks, commands 
@@ -12,8 +18,17 @@ client = commands.Bot(command_prefix = '%', intents=intents)
 
 # USAJOBS API Tutorial https://developer.usajobs.gov/tutorials/search-jobs
 
-# Test
+##
+# @brief Loads the API so you can fetch job listings from the USAJobs API.
+#
+# @param keyword The keyword for job search.
+# @param num_results The number of job results to fetch.
+# @param location The location for the job search.
+# @param hiring_paths The list of hiring paths to filter jobs.
+# @return A tuple containing the jobs data and the total number of results.
+
 async def fetch_jobs_api(keyword, num_results=10, location='All', hiring_paths=[]):
+    
     url = "https://data.usajobs.gov/api/search"
     headers = {
         'Host': 'data.usajobs.gov',
@@ -44,8 +59,17 @@ async def fetch_jobs_api(keyword, num_results=10, location='All', hiring_paths=[
                 raise Exception(f"Failed to fetch jobs: {response.status}")
 
             
+##
+# @brief Sends job listings to a Discord channel as embed messages.
+#
+# @param ctx The context of the Discord command, used to send messages to the channel.
+# @param jobs The JSON object containing job listings fetched from the USAJobs API.
+# @param num_results The number of job results to display in the channel.
+# @exception None directly raised, but sends an error message if jobs data is invalid.
+#
+# @return void
+##
 
-# Send request of parsed jobs
 async def send_jobs(ctx, jobs, num_results):
     # First, check if job data exists and has items
     if jobs and 'SearchResult' in jobs and 'SearchResultItems' in jobs['SearchResult'] and jobs['SearchResult']['SearchResultItems']:
@@ -73,12 +97,15 @@ async def send_jobs(ctx, jobs, num_results):
 
             
 
+##
+# @brief Discord Command for help and general inquiry 
+##
 
 # Fetch Jobs Discord Command
 @client.command(brief="Searches jobs based on user criteria", help="""Fetches jobs based on a keyword and optional flags.
 
 Usage:
-    %fetchjobs <keyword> [-n number] [-l location]
+    %searchjobs <keyword> [-n number] [-l location]
 
 Arguments:
     keyword : The job keyword(s) to search for.
@@ -86,11 +113,23 @@ Arguments:
     -l location : The geographic location to filter jobs. Default is 'All'. Can only use one location at a time
 
 Example:
-    %fetchjobs developer -n 5 -l "New York"
+    %searchjobs developer -n 5 -l "New York"
     This will fetch 5 developer jobs in New York.""")
 
 
-async def fetchjobs(ctx, *args):
+##
+# @brief Handles the `%searchjobs` command to search (call fetchjobsapi) and parse job listings from USAJobs API.
+#
+# @param ctx The context of the Discord command, used to interact with the channel.
+# @param args A variable-length argument list containing user-provided search criteria,
+#             such as keywords and optional flags (-n for number of results, -l for location,
+#             and -p for hiring paths).
+# @exception Sends an error message to the Discord channel if input validation fails
+#            (e.g., invalid number format) or if no keyword is provided.
+#
+# @return void
+
+async def parse_jobs(ctx, *args):
     keyword = []
     num_results = 10  # Default number of results
     max_results = 30  # Maximum number of results allowed
@@ -126,7 +165,7 @@ async def fetchjobs(ctx, *args):
         i += 1
 
     if not keyword:
-        await ctx.send("Please specify a keyword for job searching. Example usage: `%fetchjobs cybersecurity -n 5`")
+        await ctx.send("Please specify a keyword for job searching. Example usage: `%searchjobs cybersecurity -n 5`")
         return
 
     keyword = ' '.join(keyword)  # Join list into a single string
@@ -137,7 +176,8 @@ async def fetchjobs(ctx, *args):
     else:
         await ctx.send(f"No jobs found or there was an error in fetching jobs for '{keyword}'.")
 
-# Background task to fetch jobs every week (604800 seconds in a week)
+## @brief Background task to fetch computer related internships for new Hawaii in Hawaii every week (604800 seconds in a week)
+
 @tasks.loop(seconds=604800)
 async def weekly_internship_fetch():
     channel_id = os.environ.get('CHANNEL_ID1')
@@ -158,6 +198,8 @@ async def weekly_internship_fetch():
         await send_jobs(channel, jobs, num_results)
     else:
         await channel.send("No jobs found or there was an error fetching jobs this week.")
+
+## @brief Background task to fetch computer related jobs for new grads in Hawaii every week (604800 seconds in a week)
 
 @tasks.loop(seconds=604800)
 async def weekly_job_fetch():
@@ -180,7 +222,7 @@ async def weekly_job_fetch():
     else:
         await channel.send("No jobs found or there was an error fetching jobs this week.")
 
-# On Ready
+# @brief On Ready function to let user know
 @client.event
 async def on_ready():
     print(f"✅ Logged in as {client.user} ({client.user.id})")

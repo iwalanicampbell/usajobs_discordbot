@@ -1,0 +1,162 @@
+\doxysection{main Namespace Reference}
+\hypertarget{namespacemain}{}\label{namespacemain}\index{main@{main}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacemain_a12ccb89abfef3a35285224c04ae9fcff}{fetch\+\_\+jobs\+\_\+api}} (keyword, num\+\_\+results=10, location=\textquotesingle{}All\textquotesingle{}, hiring\+\_\+paths=\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Loads the API so you can fetch job listings from the USAJobs API. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemain_a9acf902d1134a9710534cf49e78a4cc8}{send\+\_\+jobs}} (ctx, jobs, num\+\_\+results)
+\begin{DoxyCompactList}\small\item\em Sends job listings to a Discord channel as embed messages. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemain_a138b1a1e09c1bac92fb1ef0c1dd7de49}{parse\+\_\+jobs}} (ctx, \texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Discord Command for help and general inquiry. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemain_adc17d6124e55439f0946974661ee0cc8}{weekly\+\_\+internship\+\_\+fetch}} ()
+\begin{DoxyCompactList}\small\item\em Background task to fetch computer related internships for new Hawaii in Hawaii every week (604800 seconds in a week) \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemain_a0fae4a356b770891db3f82808cb09eb7}{weekly\+\_\+job\+\_\+fetch}} ()
+\begin{DoxyCompactList}\small\item\em Background task to fetch computer related jobs for new grads in Hawaii every week (604800 seconds in a week) \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemain_a8317e1d16bab7212ff933d2d23513f56}{on\+\_\+ready}} ()
+\item 
+\mbox{\hyperlink{namespacemain_a2c18dc200c18c3b0f5b1b800ac49e61d}{hello}} (ctx)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacemain_a5a5ba19301896a48b508b2951e3e9501}{intents}} = discord.\+Intents.\+default()
+\item 
+\mbox{\hyperlink{namespacemain_acd992242b97f546604218c4665ebd24d}{message\+\_\+content}}
+\item 
+\mbox{\hyperlink{namespacemain_aad009058dac8198809f98fe83cc37d3a}{client}} = commands.\+Bot(command\+\_\+prefix = \textquotesingle{}\%\textquotesingle{}, \mbox{\hyperlink{namespacemain_a5a5ba19301896a48b508b2951e3e9501}{intents}}=\mbox{\hyperlink{namespacemain_a5a5ba19301896a48b508b2951e3e9501}{intents}})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacemain_a12ccb89abfef3a35285224c04ae9fcff}\index{main@{main}!fetch\_jobs\_api@{fetch\_jobs\_api}}
+\index{fetch\_jobs\_api@{fetch\_jobs\_api}!main@{main}}
+\doxysubsubsection{\texorpdfstring{fetch\_jobs\_api()}{fetch\_jobs\_api()}}
+{\footnotesize\ttfamily \label{namespacemain_a12ccb89abfef3a35285224c04ae9fcff} 
+main.\+fetch\+\_\+jobs\+\_\+api (\begin{DoxyParamCaption}\item[{}]{keyword}{, }\item[{}]{num\+\_\+results}{ = {\ttfamily 10}, }\item[{}]{location}{ = {\ttfamily \textquotesingle{}All\textquotesingle{}}, }\item[{}]{hiring\+\_\+paths}{ = {\ttfamily \mbox{[}\mbox{]}}}\end{DoxyParamCaption})}
+
+
+
+Loads the API so you can fetch job listings from the USAJobs API. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em keyword} & The keyword for job search. \\
+\hline
+{\em num\+\_\+results} & The number of job results to fetch. \\
+\hline
+{\em location} & The location for the job search. \\
+\hline
+{\em hiring\+\_\+paths} & The list of hiring paths to filter jobs. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A tuple containing the jobs data and the total number of results. 
+\end{DoxyReturn}
+\Hypertarget{namespacemain_a2c18dc200c18c3b0f5b1b800ac49e61d}\index{main@{main}!hello@{hello}}
+\index{hello@{hello}!main@{main}}
+\doxysubsubsection{\texorpdfstring{hello()}{hello()}}
+{\footnotesize\ttfamily \label{namespacemain_a2c18dc200c18c3b0f5b1b800ac49e61d} 
+main.\+hello (\begin{DoxyParamCaption}\item[{}]{ctx}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacemain_a8317e1d16bab7212ff933d2d23513f56}\index{main@{main}!on\_ready@{on\_ready}}
+\index{on\_ready@{on\_ready}!main@{main}}
+\doxysubsubsection{\texorpdfstring{on\_ready()}{on\_ready()}}
+{\footnotesize\ttfamily \label{namespacemain_a8317e1d16bab7212ff933d2d23513f56} 
+main.\+on\+\_\+ready (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+\Hypertarget{namespacemain_a138b1a1e09c1bac92fb1ef0c1dd7de49}\index{main@{main}!parse\_jobs@{parse\_jobs}}
+\index{parse\_jobs@{parse\_jobs}!main@{main}}
+\doxysubsubsection{\texorpdfstring{parse\_jobs()}{parse\_jobs()}}
+{\footnotesize\ttfamily \label{namespacemain_a138b1a1e09c1bac92fb1ef0c1dd7de49} 
+main.\+parse\+\_\+jobs (\begin{DoxyParamCaption}\item[{}]{ctx}{, }\item[{\texorpdfstring{$\ast$}{*}}]{args}{}\end{DoxyParamCaption})}
+
+
+
+Discord Command for help and general inquiry. 
+
+Handles the {\ttfamily searchjobs} command to search (call fetchjobsapi) and parse job listings from USAJobs API.
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & The context of the Discord command, used to interact with the channel. \\
+\hline
+{\em args} & A variable-\/length argument list containing user-\/provided search criteria, such as keywords and optional flags (-\/n for number of results, -\/l for location, and -\/p for hiring paths). \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em Sends} & an error message to the Discord channel if input validation fails (e.\+g., invalid number format) or if no keyword is provided.\\
+\hline
+\end{DoxyExceptions}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\Hypertarget{namespacemain_a9acf902d1134a9710534cf49e78a4cc8}\index{main@{main}!send\_jobs@{send\_jobs}}
+\index{send\_jobs@{send\_jobs}!main@{main}}
+\doxysubsubsection{\texorpdfstring{send\_jobs()}{send\_jobs()}}
+{\footnotesize\ttfamily \label{namespacemain_a9acf902d1134a9710534cf49e78a4cc8} 
+main.\+send\+\_\+jobs (\begin{DoxyParamCaption}\item[{}]{ctx}{, }\item[{}]{jobs}{, }\item[{}]{num\+\_\+results}{}\end{DoxyParamCaption})}
+
+
+
+Sends job listings to a Discord channel as embed messages. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ctx} & The context of the Discord command, used to send messages to the channel. \\
+\hline
+{\em jobs} & The JSON object containing job listings fetched from the USAJobs API. \\
+\hline
+{\em num\+\_\+results} & The number of job results to display in the channel. \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em None} & directly raised, but sends an error message if jobs data is invalid.\\
+\hline
+\end{DoxyExceptions}
+\begin{DoxyReturn}{Returns}
+void 
+\end{DoxyReturn}
+\Hypertarget{namespacemain_adc17d6124e55439f0946974661ee0cc8}\index{main@{main}!weekly\_internship\_fetch@{weekly\_internship\_fetch}}
+\index{weekly\_internship\_fetch@{weekly\_internship\_fetch}!main@{main}}
+\doxysubsubsection{\texorpdfstring{weekly\_internship\_fetch()}{weekly\_internship\_fetch()}}
+{\footnotesize\ttfamily \label{namespacemain_adc17d6124e55439f0946974661ee0cc8} 
+main.\+weekly\+\_\+internship\+\_\+fetch (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Background task to fetch computer related internships for new Hawaii in Hawaii every week (604800 seconds in a week) 
+
+\Hypertarget{namespacemain_a0fae4a356b770891db3f82808cb09eb7}\index{main@{main}!weekly\_job\_fetch@{weekly\_job\_fetch}}
+\index{weekly\_job\_fetch@{weekly\_job\_fetch}!main@{main}}
+\doxysubsubsection{\texorpdfstring{weekly\_job\_fetch()}{weekly\_job\_fetch()}}
+{\footnotesize\ttfamily \label{namespacemain_a0fae4a356b770891db3f82808cb09eb7} 
+main.\+weekly\+\_\+job\+\_\+fetch (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Background task to fetch computer related jobs for new grads in Hawaii every week (604800 seconds in a week) 
+
+
+
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacemain_aad009058dac8198809f98fe83cc37d3a}\index{main@{main}!client@{client}}
+\index{client@{client}!main@{main}}
+\doxysubsubsection{\texorpdfstring{client}{client}}
+{\footnotesize\ttfamily \label{namespacemain_aad009058dac8198809f98fe83cc37d3a} 
+main.\+client = commands.\+Bot(command\+\_\+prefix = \textquotesingle{}\%\textquotesingle{}, \mbox{\hyperlink{namespacemain_a5a5ba19301896a48b508b2951e3e9501}{intents}}=\mbox{\hyperlink{namespacemain_a5a5ba19301896a48b508b2951e3e9501}{intents}})}
+
+\Hypertarget{namespacemain_a5a5ba19301896a48b508b2951e3e9501}\index{main@{main}!intents@{intents}}
+\index{intents@{intents}!main@{main}}
+\doxysubsubsection{\texorpdfstring{intents}{intents}}
+{\footnotesize\ttfamily \label{namespacemain_a5a5ba19301896a48b508b2951e3e9501} 
+main.\+intents = discord.\+Intents.\+default()}
+
+\Hypertarget{namespacemain_acd992242b97f546604218c4665ebd24d}\index{main@{main}!message\_content@{message\_content}}
+\index{message\_content@{message\_content}!main@{main}}
+\doxysubsubsection{\texorpdfstring{message\_content}{message\_content}}
+{\footnotesize\ttfamily \label{namespacemain_acd992242b97f546604218c4665ebd24d} 
+main.\+message\+\_\+content}
+

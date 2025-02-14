@@ -1,0 +1,46 @@
+\doxysection{main.\+py File Reference}
+\hypertarget{main_8py}{}\label{main_8py}\index{main.py@{main.py}}
+
+
+This file handles the main methods used for the bot.  
+
+
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespacemain}{main}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacemain_a12ccb89abfef3a35285224c04ae9fcff}{main.\+fetch\+\_\+jobs\+\_\+api}} (keyword, num\+\_\+results=10, location=\textquotesingle{}All\textquotesingle{}, hiring\+\_\+paths=\mbox{[}$\,$\mbox{]})
+\begin{DoxyCompactList}\small\item\em Loads the API so you can fetch job listings from the USAJobs API. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemain_a9acf902d1134a9710534cf49e78a4cc8}{main.\+send\+\_\+jobs}} (ctx, jobs, num\+\_\+results)
+\begin{DoxyCompactList}\small\item\em Sends job listings to a Discord channel as embed messages. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemain_a138b1a1e09c1bac92fb1ef0c1dd7de49}{main.\+parse\+\_\+jobs}} (ctx, \texorpdfstring{$\ast$}{*}args)
+\begin{DoxyCompactList}\small\item\em Discord Command for help and general inquiry. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemain_adc17d6124e55439f0946974661ee0cc8}{main.\+weekly\+\_\+internship\+\_\+fetch}} ()
+\begin{DoxyCompactList}\small\item\em Background task to fetch computer related internships for new Hawaii in Hawaii every week (604800 seconds in a week) \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemain_a0fae4a356b770891db3f82808cb09eb7}{main.\+weekly\+\_\+job\+\_\+fetch}} ()
+\begin{DoxyCompactList}\small\item\em Background task to fetch computer related jobs for new grads in Hawaii every week (604800 seconds in a week) \end{DoxyCompactList}\item 
+\mbox{\hyperlink{namespacemain_a8317e1d16bab7212ff933d2d23513f56}{main.\+on\+\_\+ready}} ()
+\item 
+\mbox{\hyperlink{namespacemain_a2c18dc200c18c3b0f5b1b800ac49e61d}{main.\+hello}} (ctx)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacemain_a5a5ba19301896a48b508b2951e3e9501}{main.\+intents}} = discord.\+Intents.\+default()
+\item 
+\mbox{\hyperlink{namespacemain_acd992242b97f546604218c4665ebd24d}{main.\+message\+\_\+content}}
+\item 
+\mbox{\hyperlink{namespacemain_aad009058dac8198809f98fe83cc37d3a}{main.\+client}} = commands.\+Bot(command\+\_\+prefix = \textquotesingle{}\%\textquotesingle{}, \mbox{\hyperlink{namespacemain_a5a5ba19301896a48b508b2951e3e9501}{intents}}=\mbox{\hyperlink{namespacemain_a5a5ba19301896a48b508b2951e3e9501}{intents}})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+This file handles the main methods used for the bot. 
+
+\begin{DoxyAuthor}{Author}
+Iwalani C. 
+\end{DoxyAuthor}
