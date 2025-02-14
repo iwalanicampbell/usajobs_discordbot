@@ -22,10 +22,16 @@ async def fetch_jobs_api(keyword, num_results=10, location='All', hiring_paths=[
     }
     params = {
         'Keyword': keyword,
-        'ResultsPerPage': str(num_results),
-        'HiringPath' : ';'.join(hiring_paths) if hiring_paths else 'public',
-        'LocationName': location if location != 'All' else None  
+        'ResultsPerPage': str(num_results)
     }
+
+    if hiring_paths:
+        params['HiringPath'] = ';'.join(hiring_paths)
+    else:
+        params['HiringPath'] = 'public'
+
+    if location != 'All':
+        params['LocationName'] = location
 
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers, params=params) as response:
@@ -35,7 +41,8 @@ async def fetch_jobs_api(keyword, num_results=10, location='All', hiring_paths=[
                 return jobs, total_results
             else:
                 print(f"Failed to fetch jobs for keyword: {keyword} with status code: {response.status}")
-                return None # Failure 
+                raise Exception(f"Failed to fetch jobs: {response.status}")
+
             
 
 # Send request of parsed jobs
