@@ -1,5 +1,4 @@
-![Deploy Doxygen](https://github.com/iwalaniy/usajobs_discordbot/actions/workflows/doxygen.yml/badge.svg)
-![Passing Tests](https://github.com/iwalaniy/usajobs_discordbot/actions/workflows/main.yml/badge.svg)
+[![Doxygen pages-build-deployment](https://github.com/iwalanicampbell/usajobs_discordbot/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/iwalanicampbell/usajobs_discordbot/actions/workflows/pages/pages-build-deployment)
 
 
 # USAJOBS Discord Bot
